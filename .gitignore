@@ -1,0 +1,19 @@
+# Generated build output (safe to delete with `latex_handler clean`)
+build/
+logs/
+pdfs/
+
+# latexmk / TeX intermediates
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.nav
+*.out
+*.snm
+*.synctex.gz
+*.toc
+*.lof
+*.lot

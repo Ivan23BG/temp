@@ -1,0 +1,41 @@
+# Project-level defaults shipped by the template. These values are copied into
+# every new project and can be overridden by user/global config or CLI flags.
+
+[structure]
+source = "src"
+build = "build"
+pdf = "pdfs"
+logs = "logs"
+assets = "assets"
+
+[discovery]
+enabled = true
+patterns = ["main.tex", "*_main.tex"]
+exclude = ["legacy", "templates", "tmp", "temp", "assets"]
+
+[compiler]
+backend = "latexmk"
+engine = "pdflatex"
+shell_escape = true
+synctex = true
+interaction = "nonstopmode"
+halt_on_error = true
+parallel = true
+max_workers = 8
+
+[output]
+mirror_structure = true
+keep_intermediates = true
+
+[themes]
+enabled = ["light", "dark"]
+default = "light"
+
+# `latex_handler new` only inserts these keys when they are missing. Keeping
+# them in the template means a generated project matches the template exactly,
+# so `project sync` never tries to rewrite this file. Change `name` to whatever
+# you like after creating a project (the CLI does not otherwise use it).
+[project]
+name = "project"
+template = "tp"
+template_version = "latest"

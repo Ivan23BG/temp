@@ -1,0 +1,41 @@
+exercice 1.
+je ne suis pas sur de bien comprendre ce qu'on veut montrer exactement, voici ce que je pense
+on peut supposer que g est connexe et appliquer notre raisonnement sur les composantes connexes de g le cas echeant
+
+1.
+sens direct:
+supposons que g est une union disjointe de cliques
+s'il existe u1 u2 u3 dans g tq u1u2 et u2u3 dans E alors, comme g est une union disjointe de cliques et que u1u2u3 sont dans la meme composante connexe, u1u2u3 forment une clique et u1u3 dans E.
+
+supposons maintenant que g soit un graphe avec la propriete suivante
+(P) pour tout u1u2u3 dans G, u1u2 et u2u3 dans E implique u1u3 dans E
+
+on considere une composante connexe U de G et deux sommets x et y de U (pas forcement voisins).
+ces deux sommets appartenants a une meme composante connexe il existe un chemin x,p_1,...,p_n,y dans U
+mais alors, xp_1 existe et p_1p_2 aussi donc par (P) xp_2 aussi.
+en procedant ainsi de suite, x et y sont voisins. cela etant vraie pour toute paire de sommets au sein de chaque composante connexe, g est bien une union disjointe de cliques
+
+2. un algo polynomial serait le suivant
+
+prendre un triplet aleatoire de sommets dans G (se fait en temps constant) (au pire par exemple les 3 premiers)
+
+a) si ces 3 sommets verifient la propriété, on peut les ignorer, ils forment deja un morceau de clique, au pire on peut les condenser en un seul sommet et recommencer sur le graphe G' resultant. si a la fin on a 3 sommets qui sont connectes alors on a gagné, sinon on est tombe a un moment dans le cas en dessous
+
+b) si ces 3 sommets ne verifient pas P alors un de ces sommets doit appartenir a X, on branche en appelant l'algorithme sur (G - u1, k-1), (G-u2, k-1) et (G-u3, k-1)
+
+si a n'importe quel moment on a k negatif on a perdu. si apres a on a k=0 on a perdu
+sinon on a gagne et la suite des u_i elimines correspondent a notre ensemble X de taille <= k
+pour la complexite, prendre un triplet aleatoire prend un temps constant. verifier que les trois sommets sont voisins prend un temps constant, l'algo a un facteur de branchement de 3 et de profondeur k donc la complexite est de 3^k * le cout de chaque noeud, on peut supposer que la compression dont on a parlé, qui necessite de reecrire les voisinages des sommets voisins prend un temps au plus n^(O(1)) ce qui fait ce qu'on veut
+
+exo 2.
+
+1. aucune idee, je ne vois pas comment relier le facteur 2^k des permutations / choix des sommets de X a l'entree D qui peut etre de taille arbitraire...
+2. si G induit par D n'est pas une union disjointe de cliques alors il va falloir depenser du k pour resoudre D? dans quel cas on pourrait juste depenser du k pour reduire d et refaire sur genre (G, D' plus petit, k' plus petit)? pas bien compris non plus
+3. me donne pas la solution tout de suite, commence par bien me confirmer ou non qu'une regle dite "sure" est une regle telle qui verifie que l'ensemble des solutions sur G est le meme que l'ensemble des solutions sur G' (G apres avori appliqué la regle), donc en gros elle ne rajoute pas de solutions et n'en retire pas non plus
+la regle r2 est evidente, g[d] est une union de cliques donc si x est lie a une composante connexe il doit etre lie a toute la clique, le cas echeant il devra etre retiré par X
+pour la regle r1 je suppose que s'il appartient a deux cliques distinctes alors ces cliques n'etant pas reliées, x plus ces deux cliques ne forme pas une clique et donc x doit appartenir a X
+
+4. aucune idee....
+
+5. bah ca vient du 4 x) on a bien reussi supposement a construire un algo en 2^k n^O(1) prcq on a montre dans le 1 la reduction a partir de DCD et du 2 au 4 on a montré l'existence de l'algo a la bonne complexite pour DCD
+on fera le 3 plus tard

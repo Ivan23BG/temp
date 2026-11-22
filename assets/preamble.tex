@@ -1,0 +1,319 @@
+% ==========================================
+% 1. Theme Configuration
+% ==========================================
+% Map latex_handler's \lhtheme (injected by -pretex) to the legacy \THEME
+% macro; default to light when neither is defined.
+\ifdefined\lhtheme\else\def\lhtheme{light}\fi
+\ifdefined\THEME\else\let\THEME\lhtheme\fi % Fallback: light | dark
+
+\documentclass[11pt,a4paper]{article}
+
+% ==========================================
+% 2. Core Packages & Language
+% ==========================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{ifthen}
+\usepackage{xcolor}
+\usepackage{pagecolor}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+
+% ==========================================
+% 3. Typography & Page Layout
+% ==========================================
+\usepackage{libertine}
+\usepackage[libertine]{newtxmath}
+\usepackage{microtype}
+\usepackage[a4paper, margin=2.8cm]{geometry}
+
+% ==========================================
+% 4. Custom Macros & List Formatting
+% ==========================================
+\newcommand{\ol}[1]{\overline{#1}}
+
+\setlist[enumerate]{noitemsep, topsep=3pt, parsep=0pt, partopsep=0pt}
+\setlist[itemize]{noitemsep, topsep=3pt, parsep=0pt, partopsep=0pt}
+
+% ==========================================
+% 5. Cohesive Color Palettes (Light vs Dark)
+% ==========================================
+\ifthenelse{\equal{\THEME}{dark}}{
+    % --- DARK MODE PALETTE (Midnight Slate) ---
+    \definecolor{bgcolor}{RGB}{24, 24, 27}          % Zinc 900 (#18181B)
+    \definecolor{textcolor}{RGB}{228, 228, 231}      % Zinc 200 (#E4E4E7)
+    \definecolor{boxbg}{RGB}{39, 39, 42}            % Zinc 800 (#27272A)
+
+    % Semantic Identity Colours (Dark Mode)
+    \definecolor{exocolor}{RGB}{129, 140, 248}      % Soft Periwinkle/Indigo
+    \definecolor{solcolor}{RGB}{52, 211, 153}       % Sage Mint Green
+    \definecolor{thmcolor}{RGB}{56, 189, 248}       % Sky / Periwinkle Blue
+    \definecolor{defcolor}{RGB}{45, 212, 191}       % Bright Cyan-Teal
+    \definecolor{lemcolor}{RGB}{192, 132, 252}      % Soft Orchid / Violet
+    \definecolor{fallbackcolor}{RGB}{161, 161, 170} % Muted Zinc Grey
+
+    % Algorithm colours (Catppuccin / Zinc Dark Blend)
+    \definecolor{AlgoBg}{HTML}{18181B}         % Clean Zinc 900 canvas match
+    \definecolor{AlgoHeaderBg}{HTML}{27272A}   % Zinc 800 header contrast
+    \definecolor{AlgoBorder}{HTML}{3F3F46}     % Crisp border (Zinc 700)
+    \definecolor{AlgoText}{HTML}{E4E4E7}       % High-contrast text (Zinc 200)
+    \definecolor{AlgoKeyword}{HTML}{CBA6F7}    % Soft Lavender keyword
+    \definecolor{AlgoComment}{HTML}{71717A}    % Subdued gray comment
+}{
+    % --- LIGHT MODE PALETTE (Executive Academic) ---
+    \definecolor{bgcolor}{RGB}{255, 255, 255}        % Pure White (#FFFFFF)
+    \definecolor{textcolor}{RGB}{15, 23, 42}         % Deep Slate (#0F172A)
+    \definecolor{boxbg}{RGB}{248, 250, 252}        % Soft Slate 50 (#F8FAFC)
+
+    % Semantic Identity Colours (Light Mode)
+    \definecolor{exocolor}{RGB}{30, 58, 138}       % Deep Academic Navy (#1E3A8A)
+    \definecolor{solcolor}{RGB}{22, 101, 52}        % Dark Forest Green (#166534)
+    \definecolor{thmcolor}{RGB}{29, 78, 216}        % Vibrant Sapphire Blue (#1D4ED8)
+    \definecolor{defcolor}{RGB}{13, 148, 136}       % Deep Ocean Teal (#0D9488)
+    \definecolor{lemcolor}{RGB}{124, 58, 237}       % Deep Amethyst Purple (#7C3AED)
+    \definecolor{fallbackcolor}{RGB}{100, 116, 139} % Slate Grey (#64748B)
+    
+    % Algorithm colours (Crisp Minimalist)
+    \definecolor{AlgoBg}{HTML}{FFFFFF}         % Pure White
+    \definecolor{AlgoHeaderBg}{HTML}{F1F5F9}   % Slate 100 header block
+    \definecolor{AlgoBorder}{HTML}{0F172A}     % Deep Slate border
+    \definecolor{AlgoText}{HTML}{0F172A}       % Deep Slate text
+    \definecolor{AlgoKeyword}{HTML}{0F172A}    % Bold Slate keywords
+    \definecolor{AlgoComment}{HTML}{64748B}    % Muted Slate gray comments
+}
+
+\pagecolor{bgcolor}
+\color{textcolor}
+
+% ==========================================
+% 6. Academic Cards & Theorem Environments
+% ==========================================
+
+% --- Exercise & Solution Container Cards ---
+\newtcolorbox[auto counter]{td-exo}[1][]{
+    enhanced, breakable,
+    colback=boxbg, colframe=exocolor,
+    coltitle=exocolor, coltext=textcolor,
+    boxrule=0pt, leftrule=3.5pt, arc=0mm,
+    top=8pt, bottom=8pt, left=12pt, right=12pt,
+    title={\bfseries Exercice~\thetcbcounter : #1},
+    detach title, before upper={\tcbtitle\par\vspace{4pt}}
+}
+
+\newtcolorbox{td-sol}[1][]{
+    enhanced, breakable,
+    colback=bgcolor, colframe=solcolor,
+    coltitle=solcolor, coltext=textcolor,
+    boxrule=0.5pt, arc=1mm,
+    top=8pt, bottom=8pt, left=12pt, right=12pt,
+    title={\bfseries Solution #1},
+    detach title, before upper={\tcbtitle\par\vspace{4pt}}
+}
+
+% --- Custom Colored Theorem Header Styles ---
+\newtheoremstyle{colored-thm}
+  {6pt}{6pt}{\itshape}{0pt}{\bfseries\color{thmcolor}}{.}{ }{}
+
+\newtheoremstyle{colored-def}
+  {6pt}{6pt}{\normalfont}{0pt}{\bfseries\color{defcolor}}{.}{ }{}
+
+\newtheoremstyle{colored-lem}
+  {6pt}{6pt}{\itshape}{0pt}{\bfseries\color{lemcolor}}{.}{ }{}
+
+\newtheoremstyle{colored-fallback}
+  {6pt}{6pt}{\normalfont}{0pt}{\bfseries\color{fallbackcolor}}{.}{ }{}
+
+% --- Declare Environments ---
+\theoremstyle{colored-thm}
+\newtheorem{theorem}{Théorème}[section]
+
+\theoremstyle{colored-def}
+\newtheorem{definition}{Définition}[section]
+
+\theoremstyle{colored-lem}
+\newtheorem{lemma}[theorem]{Lemme}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\theoremstyle{colored-fallback}
+\newtheorem{remark}{Remarque}[section]
+\newtheorem{example}{Exemple}[section]
+
+% --- Left Accent Bar Wrappers ---
+\tcolorboxenvironment{theorem}{
+    blanker, breakable, left=10pt,
+    before skip=8pt, after skip=8pt,
+    coltext=textcolor,
+    borderline west={2.5pt}{0pt}{thmcolor}
+}
+
+\tcolorboxenvironment{definition}{
+    blanker, breakable, left=10pt,
+    before skip=8pt, after skip=8pt,
+    coltext=textcolor,
+    borderline west={2.5pt}{0pt}{defcolor}
+}
+
+\tcolorboxenvironment{lemma}{
+    blanker, breakable, left=10pt,
+    before skip=8pt, after skip=8pt,
+    coltext=textcolor,
+    borderline west={2.5pt}{0pt}{lemcolor}
+}
+
+\tcolorboxenvironment{proposition}{
+    blanker, breakable, left=10pt,
+    before skip=8pt, after skip=8pt,
+    coltext=textcolor,
+    borderline west={2.5pt}{0pt}{lemcolor}
+}
+
+\tcolorboxenvironment{remark}{
+    blanker, breakable, left=10pt,
+    before skip=8pt, after skip=8pt,
+    coltext=textcolor,
+    borderline west={2.5pt}{0pt}{fallbackcolor}
+}
+
+\tcolorboxenvironment{example}{
+    blanker, breakable, left=10pt,
+    before skip=8pt, after skip=8pt,
+    coltext=textcolor,
+    borderline west={2.5pt}{0pt}{fallbackcolor}
+}
+
+% ==========================================
+% 7. Hyperrefs
+% ==========================================
+% Load hyperref without inline options (or omit if another package already loads it)
+\usepackage{hyperref}
+
+% Configure links safely via \hypersetup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=exocolor,
+    citecolor=exocolor,
+    urlcolor=exocolor
+}
+
+% Match link font to document body font
+\urlstyle{same}
+\usepackage{fontawesome5}
+
+% Semantic command for algorithm names
+\newcommand{\algo}[1]{\ifmmode\mathsf{#1}\else\textsf{#1}\fi}
+\newcommand{\defemph}[1]{{\color{defcolor}#1}}
+\newcommand{\bb}[1]{\mathbb{#1}}
+
+\usepackage{mathtools}
+\providecommand{\O}{} % Évite les conflits si \O existe déjà
+\renewcommand{\O}{\mathrm{O}}
+\DeclarePairedDelimiter{\parentheses}{(}{)}
+\newcommand{\BigO}[1]{\O\parentheses*{#1}}
+
+% Algorithms
+% ==============================================================================
+% LIGHTWEIGHT PSEUDOCODE MACROS (Pure TeX, 0 Package Clashing)
+% ==============================================================================
+% Keywords and helper formatting
+\newcommand{\kw}[1]{\textbf{\color{AlgoKeyword}#1}}
+\newcommand{\proc}[1]{\textsf{\scshape #1}}
+\newcommand{\var}[1]{\textsf{#1}}
+\newcommand{\algcomment}[1]{\hfill\textsf{\itshape\color{AlgoComment}// #1}}
+
+% Clean Indentation Helpers (4-space equivalent steps)
+\newcommand{\I}{\hspace*{1.2em}}
+\newcommand{\II}{\hspace*{2.4em}}
+\newcommand{\III}{\hspace*{3.6em}}
+\newcommand{\IV}{\hspace*{4.8em}}
+
+% ==============================================================================
+% PURE TCOLORBOX ALGORITHM CONTAINER
+% ==============================================================================
+\DeclareTColorBox[auto counter, number format=\arabic]{cleanalgo}{m O{} O{}}{%
+    nobeforeafter,
+    before=\vspace{0.8em}\noindent,
+    after=\vspace{0.8em},
+    width=\linewidth,
+    enhanced,
+    arc=0mm,
+    boxrule=0.8pt,
+    colback=AlgoBg,
+    colframe=AlgoBorder,
+    colbacktitle=AlgoHeaderBg,
+    coltitle=AlgoText,
+    borderline south={0.6pt}{0pt}{AlgoBorder},
+    % attach title to top,
+    fonttitle=\sffamily\bfseries\small,
+    title={%
+        \mbox{\textsc{#1}}%
+        \hfill%
+        {\normalfont\sffamily\scriptsize\color{AlgoComment}Algorithm~\thetcbcounter}%
+    },
+    label={#3}, % Pass hyperref label as 3rd optional argument
+    top=10pt,
+    bottom=10pt,
+    left=12pt,
+    right=12pt,
+    toptitle=5pt,
+    bottomtitle=5pt,
+    fontupper=\sffamily\small\color{AlgoText},
+    #2
+}
+\DeclareTColorBox[auto counter, number format=\arabic]{cleanalgoenonce}{m O{} O{}}{%
+    nobeforeafter,
+    before=\vspace{0.8em}\noindent,
+    after=\vspace{0.8em},
+    width=\linewidth,
+    enhanced,
+    arc=0mm,
+    boxrule=0.8pt,
+    colback=AlgoBg,
+    colframe=AlgoBorder,
+    colbacktitle=AlgoHeaderBg,
+    coltitle=AlgoText,
+    borderline south={0.6pt}{0pt}{AlgoBorder},
+    % attach title to top,
+    fonttitle=\sffamily\bfseries\small,
+    title={%
+        \mbox{\textsc{#1}}%
+    },
+    label={#3}, % Pass hyperref label as 3rd optional argument
+    top=10pt,
+    bottom=10pt,
+    left=12pt,
+    right=12pt,
+    toptitle=5pt,
+    bottomtitle=5pt,
+    fontupper=\sffamily\small\color{AlgoText},
+    #2
+}
+
+% ==== Example use case:
+% \begin{cleanalgo}{DijkstraShortestPath}[][alg:refhere]
+%     \kw{Input:} Graph $G = (V, E)$, Source $s \in V$, Weights $w: E \to \mathbb{R}^+$ \\
+%     \kw{Output:} Distance map $d$, Predecessor map $\pi$ \\[4pt]
+%     {\color{AlgoBorder}\hrule height 0.4pt}\vspace{6pt}
+%     \kw{for} each $v \in V$ \kw{do} \\
+%     \I $d[v] \gets \infty$ \\
+%     \I $\pi[v] \gets \var{null}$ \\
+%     \kw{end} \\
+%     $d[s] \gets 0$ \\
+%     $Q \gets V$ \algcomment{Min-priority queue initialized with V} \\[4pt]
+%     \kw{while} $Q \neq \emptyset$ \kw{do} \\
+%     \I $u \gets \proc{Extract-Min}(Q)$ \\
+%     \I \kw{for} each neighbor $v \in \text{Adj}[u]$ \kw{do} \\
+%     \II \kw{if} $d[u] + w(u,v) < d[v]$ \kw{then} \\
+%     \III $d[v] \gets d[u] + w(u,v)$ \\
+%     \III $\pi[v] \gets u$ \\
+%     \II \kw{end} \\
+%     \I \kw{end} \\
+%     \kw{end} \\
+%     \kw{return} $(d, \pi)$
+% \end{cleanalgo}
+
+% here's a ref to \ref{alg:refhere}

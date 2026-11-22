@@ -1,0 +1,7 @@
+name = "tp"
+version = "1.0.0"
+description = "Feuille de recueil d'exercices TP — cover page avec métadonnées (auteur, dépôt, licence), préambule moderne (td-exo, td-sol, cleanalgo) — basé sur tmp (HAI904I Algorithmique Spécialisée)."
+repository = "/home/ivan/Projects/new_tool/templates/tp"
+authors = ["Ivan23BG"]
+
+[dependencies]

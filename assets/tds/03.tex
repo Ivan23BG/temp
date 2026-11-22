@@ -1,0 +1,183 @@
+\section{TD3 --- Compression itérative}\label{sec:td3-compression}
+
+\begin{td-exo}[Profondeur bornée ne signifie pas \algo{FPT}]
+    Deux procédures ont une profondeur au plus \(k\).
+    La première crée au plus deux fils par nœud, la seconde au plus \(n\).
+    Le travail local coute \(n^2\).
+
+    \begin{enumerate}
+        \item Borner leurs temps de calcul et classer ces bornes comme \algo{FPT} ou \algo{XP}.
+
+        \item Pour une constante \(c\) fixée et \(k > c\), montrer qu'aucune constante \(f(k)\) ne majore \(n^{k-c}\) pour tous les entiers \(n\).
+
+        \item Un algorithme en temps \(n^k\) prouve-t-il que le problème n'est pas \algo{FPT} ?
+
+        \item Si le nombre de fils est \(k + 1\), la conclusion change-t-elle ?
+    \end{enumerate}
+\end{td-exo}
+
+\begin{td-sol}
+    On note \(p_1\) la procédure qui crée au plus deux fils par nœud et \(p_2\) celle qui en crée au plus \(n\).
+
+    \begin{enumerate}
+        \item Le nombre de feuilles pour \(p_1\) est au plus
+        \begin{equation*}
+            {b_1}^{d_1}
+        \end{equation*}
+        où \(b_1\) est le facteur de branchement et \(d_1\) la profondeur.
+
+        Ici, on a \(b_1 \leq 2\) et \(d_1 \leq k\) donc le nombre de feuilles \(f_1\) respecte 
+        \begin{equation*}
+            \begin{aligned}
+                f_1 
+                &\leq {b_1}^{d_1} \\
+                &\leq 2^k
+            \end{aligned}
+        \end{equation*}
+        Ainsi, le nombre de nœuds dans l'arbre de recherche pour la procédure \(p_1\) est au plus \(2f = 2^{k+1}\).
+        Le temps de calcul en chaque nœud étant exactement \(n^2\), la procédure \(p_1\) finit en temps au plus \(2^{k+1}\cdot n^2\).
+
+        En posant \(f(k) = 2^{k+1}\), on obtient que \(p_1\) termine en \(f(k) n^2\) donc la procédure \(p_1\) est \algo{FPT}.
+        
+        \vspace{\baselineskip}
+
+        On procède de même pour \(p_2\) :
+        \begin{equation*}
+            {b_2}^{d_2}
+        \end{equation*}
+        avec \(b_2 = n\) et \(d_2 = k\).
+
+        On a alors un temps de calcul en au plus \(2n^k \cdot n^2 = 2 n^{k+2}\). 
+        Le facteur \(k\) étant dans l'exposant de \(n\), la procédure \(p_2\) est \algo{XP}.
+
+        \item À \(k\) fixé, \(f(k)\) est une constante. Or \(n^{k-c}\) est une fonction avec \(\displaystyle\lim_{n\to\infty} n^{k-c} = +\infty\).
+        Donc aucune constante ne majore cette fonction pour tout \(n\).
+
+        \item Un tel algorithme ne suffit pas à prouver qu'un problème n'est pas \algo{FPT}, pour cela, il faut prouver qu'il est \algo{W}\([1]\) difficile.
+
+        \item Si le nombre de fils à chaque nœud devient \(k+1\), le nombre de feuilles devient \(2^{k+1}\) qui est toujours \(\BigO{2^k}\).
+        La procédure est donc toujours \algo{FPT}.
+    \end{enumerate}
+\end{td-sol}
+
+\begin{td-exo}[Closest String]
+    On reprend les mots \(s_1,\ldots,s_r \in \Sigma^L\), le rayon \(d\) et le pseudo-code du cours.
+    La distance de Hamming \(d_H(x, y)\) est le nombre de positions où \(x\) et \(y\) diffèrent.
+    L'appel initial se fait avec \((z, l) =  (s_1, d)\).
+
+    \begin{enumerate}
+        \item Soit \(c\) une solution et \(s_i\) un mot avec \(d_H(z, s_i) > d\).
+        Dans un ensemble \(P\) de \(d+1\) positions de désaccord, montrer qu'il existe \(p \in P\) tel que \(c[p] = s_i[p] \neq z[p]\).
+        Pourquoi ne suffit-il pas de dire seulement que \(c\) et \(z\) diffèrent quelque part dans \(P\) ?
+
+        \item Montrer que, si \(d_H(z, c) \leq l\), au moins un appel enfant vérifie \(d_H(z^{(p)}, c) \leq l-1\).
+        Justifier l'invariant à la racine.
+
+        \item En déduire que l'algorithme trouve une solution si elle existe et n'en renvoie jamais une fausse.
+        Traiter le cas \(l = 0\).
+
+        \item Pour \(d\geq 1\), borner le nombre de nœuds et obtenir un temps \(\BigO{(d+1)^d r L}\).
+        Traiter séparément \(d = 0\).
+    \end{enumerate}
+\end{td-exo}
+
+\begin{td-sol}
+    \begin{enumerate}
+        \item Si \(c\) est une solution alors \(d_H(c, s_i) \leq d\). 
+        Ainsi, pour \(d+1\) positions de désaccord entre \(s_i\) et \(z\), il y en a au moins une qui vérifie \(c[p] = s_i[p]\) sinon \(d_H(c, s_i) > d\) ce qui contredit le fait que \(c\) est une solution.
+
+        Si on a seulement que \(c\) et \(z\) diffèrent alors rien ne permet de garantir que la solution est à bonne distance de tous les \(s_i\).
+
+        \item Supposons que \(d_H(z, c) \leq l\).
+        Chaque appel enfant est fait en modifiant une des positions de désaccord parmi \(d+1\) positions.
+        Par la question précédente, au moins une de ces positions correspond à un désaccord entre \(z\) et \(c\). 
+        Ainsi, l'appel enfant qui modifie cette position en le caractère correspondant dans \(c\) vérifie bien \(d_H(z^{(p)}, c) \leq l-1\).
+
+        Cette preuve étant vraie à chaque étape, elle est en particulier vraie à la racine de l'arbre.
+
+        \item L'algorithme réduit \(d\) strictement à chaque étape dans une feuille de l'arbre, ainsi la solution se trouve en descendant un nombre fini de fois dans l'arbre.
+        Si une solution existe, l'algorithme la trouve, car il va explorer toutes les possibilités qui y mènent.
+        L'algorithme renvoie une solution après avoir vérifié que \(\forall i, d_H(z, s_i) \leq d\), ainsi, il ne peut jamais renvoyer une solution fausse.
+
+        Si \(l = 0\) alors tous les \(s_i\) doivent être identiques et correspondent à la solution, sinon il n'en existe pas.
+
+        \item A chaque étape de l'arbre, il y a au plus \(d+1\) positions de désaccord sur lesquelles on va brancher.
+        On va descendre dans l'arbre au plus \(d\) fois pour atteindre la solution, ce qui fait \({(d+1)}^d\) feuilles.
+
+        Le cout local en chaque nœud est le temps de parcours d'un mot donné, ce qui se fait en \(\BigO{L}\) et le parcours des mots pour en trouver un qui est à distance \(\geq d+1\), ce qui se fait en \(\BigO{r}\).
+        Le nombre de nœuds dans l'arbre est au plus \(2{(d+1)}^d\), ce qui fait un temps de calcul total de \(\BigO{(d+1)^d r L}\).
+    \end{enumerate}
+\end{td-sol}
+
+
+\begin{td-exo}[Suppression de cycles dans un tournoi]
+    Un \defemph{tournoi} est un graphe orienté sans boucle tel que : pour tous sommets distincts \(u, v\), exactement un des arcs \(u\to v\) ou \(v\to u\) existe.
+    Étant donné un tournoi \(T\) et un entier \(k\geq 0\), on cherche au plus \(k\) sommets dont la suppression rend \(T\) acyclique.
+
+    \begin{enumerate}
+        \item Montrer qu'un tournoi contient un cycle orienté si et seulement s'il contient un triangle orienté.\\
+        \textit{Indication : considérer un cycle orienté de longueur minimum et l'arc entre son premier et son troisième sommet.}
+
+        \item Écrire un algorithme \algo{FPT} pour ce problème, démontrer sa correction et analyser sa complexité.
+    \end{enumerate}
+
+\end{td-exo}
+
+\begin{td-sol}
+    \begin{enumerate}
+        \item Soit \(C = c_1,\ldots,c_n\) un cycle orienté minimal de longueur \(n\geq 4\) dans un tournoi.
+        Comme \(C\) est dans un tournoi, l'arc \(c_1c_3\) existe.
+        Si cet arc est \(c_3 \to c_1\) alors \(c_1,c_2,c_3\) forme un cycle de longueur \(3 < n\).
+        Si cet arc est \(c_1 \to c_3\) alors \(c_1,c_3,\ldots,c_n\) forme un cycle de longueur \(n-1 < n\).
+
+        Ainsi, \(n \leq 3\).
+        Comme un cycle de longueur \(2\) n'existe pas dans un tournoi (car il n'y a qu'un arc entre toute paire de sommets), on a \(n=3\).
+        Donc tout cycle orienté implique l'existence d'un triangle orienté (la réciproque est évidente).
+
+        \item D'après la question 1, un tournoi est acyclique si et seulement s'il ne contient aucun triangle orienté. Pour détruire tous les cycles avec au plus \(k\) sommets, il suffit de trouver un triangle orienté \((u, v, w)\) et de brancher sur la suppression de \(u\), de \(v\) ou de \(w\).
+
+        \begin{cleanalgo}{TournamentFVS}[][alg:tournament_fvs]
+            \kw{Input:} Tournoi \(T = (V, A)\), entier \(k \ge 0\) \\
+            \kw{Output:} \var{Vrai} si \(T\) peut être rendu acyclique en supprimant \(\le k\) sommets, \var{Faux} sinon \\[4pt]
+            {\color{AlgoBorder}\hrule height 0.4pt}\vspace{6pt}
+            \kw{if} \(T\) ne contient aucun triangle orienté \kw{then return} \var{Vrai} \\
+            \kw{if} \(k = 0\) \kw{then return} \var{Faux} \\[4pt]
+            Trouver un triangle orienté \((u, v, w)\) dans \(T\) \algcomment{Temps polynomial \(O(n^3)\)} \\
+            \kw{for} chaque \(x \in \{u, v, w\}\) \kw{do} \\
+            \I \kw{if} \proc{TournamentFVS}(\(T \setminus \{x\}, k - 1\)) \kw{then} \\
+            \II \kw{return} \var{Vrai} \\
+            \I \kw{end} \\
+            \kw{end} \\
+            \kw{return} \var{Faux}
+        \end{cleanalgo}
+
+        \textbf{Démonstration de correction :}
+        \begin{itemize}
+            \item \textit{Exhaustivité :} Soit \(S \subseteq V\) une solution de taille \(|S| \le k\). Si \(T\) contient un triangle orienté \(\{u, v, w\}\), \(S\) doit obligatoirement contenir au moins un sommet de ce triangle (sinon le triangle survit dans \(T \setminus S\), ce qui contredirait l'acyclicité). Explorer les trois branches \(T \setminus \{u\}\), \(T \setminus \{v\}\) et \(T \setminus \{w\}\) garantit de préserver l'existence d'une solution valide si elle existe.
+            \item \textit{Conditions d'arrêt :} Si aucun triangle n'existe, \(T\) est acyclique (question 1), la branche est valide. Si \(k=0\) alors qu'il reste au moins un triangle, le quota est épuisé et la branche échoue.
+        \end{itemize}
+
+        \textbf{Analyse de complexité :}
+        \begin{itemize}
+            \item Trouver un triangle orienté s'effectue en \(\BigO{n^3}\) en testant tous les triplets.
+            \item L'arbre de recherche possède un facteur de branchement au plus \(3\) et une profondeur maximale de \(k\) (puisque \(k\) décroît de 1 à chaque niveau).
+            \item Le nombre de nœuds dans l'arbre de recherche est donc majoré par \(\mathcal{O}(3^k)\).
+        \end{itemize}
+        La complexité globale est \(\BigO{3^k \cdot n^3}\), ce qui est bien un temps \algo{FPT} par rapport au paramètre \(k\).
+    \end{enumerate}
+\end{td-sol}
+
+
+\begin{td-exo}[\algo{SAT} avec peu de variables vraies]
+    Soit une formule CNF \(\varphi\) dont chaque clause contient au plus \(d\) littéraux avec \(d\geq 2\) fixé.
+    Un littéral est une variable \(x\) ou sa négation \(\lnot x\).
+    On cherche une affectation satisfaisant toutes les clauses et rendant vraies au plus \(k\) variables.
+    Le paramètre est \(k\).
+
+    \begin{enumerate}
+        \item Écrire un algorithme basé sur une stratégie de branchement, démontrer sa correction et analyser sa complexité.
+
+        \item Expliquer le rôle de l'hypothèse \og{}\(d\) fixé\fg{} pour obtenir un algorithme \algo{FPT} de paramètre \(k\).
+        Si \(d\) fait désormais partie de l'entrée, l'algorithme est-il \algo{FPT} pour le paramètre \(k+d\) ?
+    \end{enumerate}
+\end{td-exo}

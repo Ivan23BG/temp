@@ -1,0 +1,78 @@
+% ==========================================
+% Custom Academic Title Page with TikZ Centerpiece
+% ==========================================
+\begin{titlepage}
+    \pagecolor{bgcolor}
+    \color{textcolor}
+    
+    % --- Top Header: Academic Domain & Git Link ---
+    \begin{minipage}[t]{0.65\textwidth}
+        \raggedright\strut
+        {\small\bfseries\color{exocolor} ALGORITHMIQUE \& THÉORIE DES GRAPHES}\\[2pt]
+        {\small\color{fallbackcolor} Notes Personnelles de Recherche}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[t]{0.3\textwidth}
+        \raggedleft\strut
+        {\small 
+            \href{https://github.com/Ivan23BG/cours-graphes}{\color{fallbackcolor}github.com/Ivan23BG}\\[2pt]
+            \color{fallbackcolor}\today
+        }
+    \end{minipage}
+
+    \vfill
+
+    % --- Central Title Card ---
+    \begin{tcolorbox}[
+        enhanced,
+        colback=boxbg,
+        colframe=exocolor,
+        boxrule=0pt,
+        leftrule=4pt,
+        arc=0mm,
+        top=16pt, bottom=16pt, left=18pt, right=18pt
+    ]
+        {\Huge\bfseries\color{textcolor} Algorithmique Spécialisée}\\[6pt] % REPLACEME: document title
+        {\large\color{exocolor}\bfseries Recueil d'Exercices}
+        
+        \vspace{10pt}
+        \color{textcolor}\rule{\textwidth}{0.4pt}
+        \vspace{8pt}
+
+        {\small
+        \textbf{Mots-clés :} \#Graphes \quad \#Kernelisation \quad \#\algo{FPT}
+        }
+    \end{tcolorbox}
+
+    \vfill
+
+    % --- Minimalist TikZ Graph Centerpiece ---
+    \input{tikz_cover}
+
+    \vfill
+
+    % --- Abstract / Summary Box ---
+    \begin{tcolorbox}[
+        blanker,
+        left=12pt,
+        borderline west={1.5pt}{0pt}{fallbackcolor}
+    ]
+        {\small\color{fallbackcolor}
+        \textbf{Résumé :} Ce document rassemble les énoncés d'exercices et méthodes de résolution pour des problèmes d'algorithmique spécialisée.
+        } % REPLACEME: description
+    \end{tcolorbox}
+
+    \vfill
+
+    % --- Bottom Metadata Block ---
+    \raggedright
+    \small
+    \begin{tabular}{@{} l l @{}}
+        \textbf{Auteur :} & Ivan Lejeune \\
+        \textbf{Dépôt :} & \href{https://github.com/Ivan23BG/HAI904I_Algorithmique_Specialisee}{\color{exocolor}github.com/Ivan23BG/HAI904I\_Algorithmique\_Specialisee} \\ % REPLACEME: link to actual repo
+        \textbf{Licence :} & \color{fallbackcolor} CC BY-SA 4.0
+    \end{tabular}
+
+    \clearpage
+\end{titlepage}
+\pagecolor{bgcolor} % Retains background theme for main content

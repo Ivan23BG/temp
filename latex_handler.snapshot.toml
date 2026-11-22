@@ -1,0 +1,63 @@
+format_version = 1
+template = "tp"
+template_version = "1.0.0"
+
+[resources.".gitignore"]
+template_path = ".gitignore"
+fingerprint = "fnv1a64:9786462bf2809c59:212"
+
+[resources."README.md"]
+template_path = "README.md"
+fingerprint = "fnv1a64:8c28968dabfb2292:1129"
+
+[resources."assets/cover.tex"]
+template_path = "assets/cover.tex"
+fingerprint = "fnv1a64:741feec2ae562857:2468"
+
+[resources."assets/idees.txt"]
+template_path = "assets/idees.txt"
+fingerprint = "fnv1a64:ed601da541c6fac8:3701"
+
+[resources."assets/preamble.tex"]
+template_path = "assets/preamble.tex"
+fingerprint = "fnv1a64:bfbd08a7c7af1452:11042"
+
+[resources."assets/tds/01.tex"]
+template_path = "assets/tds/01.tex"
+fingerprint = "fnv1a64:2462af0665348333:9239"
+
+[resources."assets/tds/02.tex"]
+template_path = "assets/tds/02.tex"
+fingerprint = "fnv1a64:2ccac2afb3bb0ca4:62"
+
+[resources."assets/tds/03.tex"]
+template_path = "assets/tds/03.tex"
+fingerprint = "fnv1a64:17d4e7cb911fbb36:11071"
+
+[resources."assets/tds/04.tex"]
+template_path = "assets/tds/04.tex"
+fingerprint = "fnv1a64:5b1a362e8692eeb3:47"
+
+[resources."assets/tikz_cover.tex"]
+template_path = "assets/tikz_cover.tex"
+fingerprint = "fnv1a64:319e6238d598e801:1375"
+
+[resources."examples/README.md"]
+template_path = "examples/README.md"
+fingerprint = "fnv1a64:7559ad0e549973e6:77"
+
+[resources."latex_handler.toml"]
+template_path = "latex_handler.toml"
+fingerprint = "fnv1a64:eb7bf821a8114f4a:1036"
+
+[resources."setup-local-repo.sh"]
+template_path = "setup-local-repo.sh"
+fingerprint = "fnv1a64:c3d5bca7d96a8fce:1178"
+
+[resources."src/main.tex"]
+template_path = "src/main.tex"
+fingerprint = "fnv1a64:11c5a549a2c8b872:189"
+
+[resources."template.toml"]
+template_path = "template.toml"
+fingerprint = "fnv1a64:9d5571587eeaa55e:342"

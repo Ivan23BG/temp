@@ -1,0 +1,134 @@
+\section{Le problème de découpage en cliques}\label{sec:dm1-fpt}
+
+On rappelle l'énoncé du problème suivant de découpage en cliques : 
+
+\begin{cleanalgoenonce}{Découpage en Cliques (DC)}[][alg:enonceDC]
+    \kw{Entrée:} \(G = (V, E)\) un graphe avec \(n\) sommets \\
+    \kw{Paramètre:} \(k\in\bb N\)\\
+    \kw{Question:} existe-t-il un ensemble \(X \subseteq V\) de sommets de taille \(k\) tel que \(G - X\) est une union disjointe de cliques
+
+\end{cleanalgoenonce}
+
+\begin{td-exo}[Découpage en cliques par branchement]
+    Étant donn\'e un graphe \(G=(V,E)\) \`a \(n\) sommets et un entier \(k\), le probl\`eme \textsc{Découpage en cliques} (\textsc{DC}) consiste \`a d\'eterminer s'il existe un ensemble \(X \subseteq V\) de taille \(k\) tel que \(G - X\) soit une union disjointe de cliques.
+    \begin{enumerate}[label=\alph*)]
+        \item\label{q1} Démontrer qu'un graphe est une union disjointe de cliques si et seulement si pour tout triplet de sommets \(u_1, u_2, u_3\), \(u_1 u_2 \in E\) et \(u_2 u_3 \in E\) implique \(u_1 u_3 \in E\).
+        \item En déduire un algorithme en temps \(3^k n^{O(1)}\) pour \textsc{DC}.
+    \end{enumerate}
+\end{td-exo}
+
+\begin{td-sol}
+    \begin{enumerate}[label=\alph*)]
+        \item On peut raisonner sur une composante connexe et appliquer le raisonnement à toutes les composantes connexes de \(G\).
+        \begin{itemize}
+            \item \emph{Sens direct :} Si \(G\) est une union disjointe de cliques et \(u_1 u_2, u_2 u_3 \in E\), alors \(u_1, u_2, u_3\) appartiennent \`a la m\^eme composante connexe, donc \`a une m\^eme clique ; par cons\'equent, \(u_1 u_3 \in E\).
+            \item \emph{Sens indirect :} Supposons la propri\'et\'e v\'erifi\'ee et soit \(U\) une composante connexe de \(G\). Pour tous \(x, y \in U\), il existe un chemin \(P \colon x = p_0, p_1, \ldots, p_m = y\) dans \(U\) (\(m \ge 1\)). Si \(P = xy\) alors \(U\) forme bien une clique. Sinon, il existe \(p_i \in P\) tel que \(xp_i \in E\) et \(p_i,p_{i+1}\in E\) (car le chemin a au moins 3 sommets). Par hypothèse, on a donc \(xp_{i+1} \in E\). Cela est vrai pour \(i=1\) et par récurrence immédiate pour tout \(p_i\) du chemin. Ainsi \(xy\in E\) (et pour conséquence, les sommets de \(P\) forment une clique).
+            Chaque composante connexe est donc une clique puisque toute paire de sommets d'une de ces composantes est reliée.
+        \end{itemize}
+
+        \item L'algorithme r\'ecursif \(\textsc{Algo1DC}(G, k, X)\) (initialis\'e avec \(X = \varnothing\)) proc\`ede ainsi :
+
+
+        \begin{cleanalgo}{Algo1DC}[][alg:algo1dc]
+            \kw{Entrée:} \(G = (V, E)\) un graphe à \(n\) sommets, \(k\in\bb N\), \(X\) la solution courante, vide si non initialisée \\
+            \kw{Sortie:} \var{Vrai} et \(X\) s'il existe un ensemble \(X \subseteq V\) de sommets de taille \(k\) tel que \(G - X\) est une union disjointe de cliques, \var{Faux} sinon\\[4pt]
+            {\color{AlgoBorder}\hrule height 0.4pt}\vspace{6pt}
+            On parcourt les \(\binom{n}{3}\) triplets \(\{u_1, u_2, u_3\} \subseteq V\) en temps \(O(n^3)\) \`a la recherche d'un triplet violant la propri\'et\'e (par exemple \(u_1 u_2, u_2 u_3 \in E\) et \(u_1 u_3 \notin E\)). \\
+            \kw{si} aucun tel triplet n'existe, \kw{alors} \(G\) est une union disjointe de cliques (par~\ref{q1}) : \\
+            \I \kw{si} \(|X| \leq k\) \kw{alors} on compl\`ete \(X\) avec \(k - |X|\) sommets de \(G\) (en v\'erifiant \(k \le n\)) \\
+            \II \kw{renvoyer} \var{Vrai} avec \(X\)\\
+            \I \kw{fin}\\
+            \kw{fin}\\[4pt]
+            \kw{sinon} toute solution doit supprimer au moins l'un des trois sommets \(u_1, u_2, u_3\)\\
+            \I \kw{si} \(k = 0\) \kw{alors} on n'a plus de budget :\\
+            \II \kw{renvoyer} \var{Faux}. \\
+            \I \kw{sinon} (\(k > 0\)) \kw{alors} on a trouvé un sommet de \(X\) :\\
+            \II \kw{renvoyer} \(\bigvee_{i}\textsc{Algo1DC}(G - u_i, k - 1, X \cup \{u_i\})\) pour \(i \in \{1, 2, 3\}\)\\
+            \I \kw{fin} \\
+            \kw{fin}
+        \end{cleanalgo}
+        
+        L'arbre de recherche a un degr\'e au plus \(3\) et une profondeur au plus \(k\), soit au plus \(\O(3^k)\) n\oe{}uds, chacun trait\'e en temps \(O(n^3)\). La complexit\'e totale est donc en \(3^k n^{O(1)}\).
+
+        L'algorithme répond à la question posée par \algo{DC} et renvoie m\^eme la solution si elle existe.
+    \end{enumerate}
+\end{td-sol}
+
+\begin{td-exo}[Découpage en cliques par compression itérative]
+    \'Etant donn\'es un graphe \(G=(V,E)\) \`a \(n\) sommets, un ensemble \(D \subseteq V\) tel que \(G - D\) soit une union disjointe de cliques, et un entier \(k\), le probl\`eme \textsc{DC-disjoint} demande s'il existe \(X \subseteq V\) de taille au plus \(k\) tel que \(X \cap D = \emptyset\) et \(G - X\) soit une union disjointe de cliques.
+    \begin{enumerate}
+        \item Montrer qu'un algorithme en temps \(n^{O(1)}\) pour \textsc{DC-disjoint} implique un algorithme en temps \(2^k n^{O(1)}\) pour \textsc{DC}.
+        \item Si \(G[D]\) n'est pas une union disjointe de cliques, que conclure sur \((G, D, k)\) ?
+        \item Montrer que les r\`egles \textsc{R1} et \textsc{R2} sont s\^ures et s'appliquent en temps polynomial.
+        \item Montrer que si \textsc{R1} et \textsc{R2} ne s'appliquent plus, l'instance se ram\`ene \`a un couplage de poids maximum dans un graphe biparti pond\'er\'e.
+        \item Conclure.
+    \end{enumerate}
+\end{td-exo}
+
+\begin{td-sol}
+    \begin{enumerate}
+        \item Soit \(v_1, \ldots, v_n\) un ordre arbitraire sur \(V\) et \(G_i = G[\{v_1, \ldots, v_i\}]\).
+        Pour \(i = \min(n, k+1)\), on peut deviner une solution initiale (ou traiter le cas \(n \le k\)).
+        En passant de \(G_i\) \`a \(G_{i+1}\) avec une solution \(S_i\) de taille au plus \(k\) pour \(G_i\), l'ensemble \(D_i = S_i \cup \{v_{i+1}\}\) v\'erifie \(|D_i| \le k + 1\) et \(G_{i+1} - D_i\) est une union disjointe de cliques.
+        Pour trouver une solution \(X\) de taille au plus \(k\) dans \(G_{i+1}\), on \'enum\`ere les \(2^{|D_i|} \le 2^{k+1}\) sous-ensembles \(Y \subseteq D_i\) (candidats pour \(X \cap D_i\)) : on pose \(D'_i = D_i \setminus Y\) et on r\'esout \textsc{DC-disjoint} sur \((G_{i+1} - Y, D'_i, k - |Y|)\).
+        \item Comme \(X \cap D = \emptyset\), aucun sommet de \(D\) ne peut \^etre supprim\'e ; si \(G[D]\) n'est pas une union disjointe de cliques, il ne le sera toujours pas dans \(G - X\). L'instance \((G, D, k)\) est donc une instance qui renverra toujours \textsc{Faux}.
+        \item On rappelle qu'une r\`egle \(R\) transformant \(I = (G, D, k)\) en \(I' = (G', D', k')\) est s\^ure si \(I\) est positive si et seulement si \(I'\) l'est. 
+        
+        \begin{enumerate}
+            \item Commencons par montrer que \(R1\) est sure.
+            On pose \(I = (G, D, k)\). Soit \(x\) un sommet de \(V \setminus D\) adjacent à deux sommets appartenant à deux cliques distinctes de \(G[D]\). En appliquant \(R1\) sur ce sommet \(x\), on obtient une instance \(I' = (G', D', k')\) avec les transformations suivantes :
+            \begin{equation*}
+                \begin{aligned}
+                    G' &= G \setminus \{x\} \\
+                    D' &= D \text{, car } x\notin D \\
+                    k' &= k - 1
+                \end{aligned}
+            \end{equation*}
+            Supposons qu'il existe \(X \subseteq V\) de taille au plus \(k\) tel que \(X \cap D = \varnothing\) et tel que \(G - X\) est une union disjointe de cliques.
+            Si \(x \notin X\) alors \(G - X\) n'est pas une union disjointe de cliques, car \(x\) relie deux cliques disjointes (sauf en \(x\)). Donc \(x\in X\). Alors, \(X' = X \setminus \{x\}\) est de taille \(|X'| = k-1\) et comme \(X \cap D = \varnothing, X' \cap D = \varnothing\). Reste à vérifier que \(G' - X'\) est une union disjointe de cliques.
+
+            On sait que \(G - X\) est une union disjointe de cliques par hypothèse, alors \(G' - X\) aussi. Comme \(x \notin G'\), on a bien que \(G' - X'\) est une union disjointe de cliques. Le sens direct est vérifié.
+
+            Supposons maintenant qu'après application de \(R1\), on obtienne une instance \(I' = (G', D', k')\) qui admet une solution \(X'\) de taille au plus \(k'\). On pose alors \(G = G' \cup \{x\}\) où \(x\) est le sommet auquel on a appliqué \(R1\), \(D = D'\) et \(k = k' + 1\). Il est alors clair qu'en posant \(X = X' \cup \{x\}\), on obtient une solution à l'instance \(I = (G, D, k)\). La règle \(R1\) est donc sure.
+
+            \item Montrons que \(R2\) est sure.
+            On pose \(I = (G, D, k)\). Soit \(x\) un sommet de \(V \setminus D\) incident à certains mais pas tous les sommets d'une meme clique de \(G[D]\).
+            En appliquant \(R2\) sur ce sommet \(x\), on obtient une instance \(I' = (G', D', k')\) avec les transformations suivantes :
+            \begin{equation*}
+                \begin{aligned}
+                    G' &= G \setminus \{x\} \\
+                    D' &= D \text{, car } x\notin D \\
+                    k' &= k - 1.
+                \end{aligned}
+            \end{equation*}
+            La preuve du sens direct est identique à celle pour la règle \(R1\). On montre donc le sens indirect.
+
+            Supposons qu'après application de \(R2\), on obtienne une instance \(I' = (G', D', k')\) qui admet une solution \(X'\) de taille au plus \(k'\). On pose alors \(G = G' \cup \{x\}\) où \(x\) est le sommet auquel on a appliqué \(R2\), \(D = D'\) et \(k = k' + 1\). Il est alors clair qu'en posant \(X = X' \cup \{x\}\), on obtient une solution à l'instance \(I = (G, D, k)\). La règle \(R2\) est donc sure.
+        \end{enumerate}
+        
+        \item Construisons un algorithme qui permet d'appliquer les règles \(R1\) et \(R2\) en temps polynomial (en \(n\)).
+
+        \begin{cleanalgo}{ApplicationRegles}[][alg:algo2regles]
+            \kw{Entrée:} \(I = (G, D, k)\) avec \(G = (V, E)\) un graphe à \(n\) sommets, \(D\) un ensemble de sommets de \(G\) tel que \(G - D\) est une union disjointe de cliques, \(k\in\bb N\) \\
+            \kw{Sortie:} \(I' = (G', D, k')\) l'instance \(I\) après application des règles \(R1,R2\) définies plus haut\\[4pt]
+            {\color{AlgoBorder}\hrule height 0.4pt}\vspace{6pt}
+            On parcourt chaque sommet \(x\) de \(V \setminus D\) et on regarde ses voisins.\\
+            \kw{si} on peut appliquer \(R1\), \kw{alors} \(x\in X\) \\
+            \I \kw{renvoyer} \(ApplicationRegles(I = (G \setminus x, D, k-1))\)\\
+            \kw{si} on peut appliquer \(R2\), \kw{alors} \(x\in X\) \\
+            \I \kw{renvoyer} \(ApplicationRegles(I = (G \setminus x, D, k-1))\)\\
+            \kw{sinon} il n'existe aucun sommet sur lequel appliquer une règle\\
+            \I \kw{si} \(k \geq 0\) \kw{alors} on a gagné \\
+            \II \kw{renvoyer} \var{Vrai} \\
+            \I \kw{sinon} on a dépassé le budget \\
+            \II \kw{renvoyer} \var{Faux} \\
+            \I \kw{fin} \\
+            \kw{fin}
+        \end{cleanalgo}
+        Etudions la complexité de cet algorithme. Parcourir tous les sommets se fait en \(\O(n)\). Vérifier l'applicabilité d'une règle se fait en regardant le voisinage du sommet, faire l'intersection avec \(D\) et regarder si tous les sommets habitent dans une même composante connexe (dans quel cas on va vérifier l'applicabilité de la règle \(R2\) en temps \(\O(n)\)) ou non, dans quel cas on applique \(R1\). Tout cela se fait donc en \(\O(n^c)\) avec au plus \(c \leq 3\). A chaque fois qu'on applique une règle, on diminue \(k\) strictement, donc on a une complexité en \(k\cdot\O(n^c)\) soit un temps polynomial en \(n\).
+
+        \item \emph{a faire}
+        
+        \item \emph{\`A compl\'eter : assemblage de la r\'esolution polynomiale de \textsc{DC-disjoint} et de la compression it\'erative en temps \(2^k n^{O(1)}\) (en ajustant la taille de \(X\) \`a \(k\) si n\'ecessaire).}
+    \end{enumerate}
+\end{td-sol}
